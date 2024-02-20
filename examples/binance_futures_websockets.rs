@@ -55,7 +55,7 @@ fn market_websocket() {
         "btcusd_210924@forceOrder", // <symbol>@forceOrder
         "!forceOrder@arr",
         "btcusd_210924@depth20@100ms", // <symbol>@depth<levels> OR <symbol>@depth<levels>@500ms OR <symbol>@depth<levels>@100ms.
-        "btcusd_210924@depth@100ms", // <symbol>@depth OR <symbol>@depth@500ms OR <symbol>@depth@100ms
+        "btcusd_210924@depth@100ms",   // <symbol>@depth OR <symbol>@depth@500ms OR <symbol>@depth@100ms
     ];
 
     let callback_fn = |event: FuturesWebsocketEvent| {
@@ -76,9 +76,7 @@ fn market_websocket() {
         keep_running.swap(true, Ordering::Relaxed);
 
         let mut web_socket: FuturesWebSockets<'_> = FuturesWebSockets::new(callback_fn);
-        web_socket
-            .connect(&FuturesMarket::USDM, stream_example)
-            .unwrap();
+        web_socket.connect(&FuturesMarket::USDM, stream_example).unwrap();
         web_socket.event_loop(&keep_running).unwrap();
         web_socket.disconnect().unwrap();
     }
@@ -89,9 +87,7 @@ fn market_websocket() {
         keep_running.swap(true, Ordering::Relaxed);
 
         let mut web_socket: FuturesWebSockets<'_> = FuturesWebSockets::new(callback_fn);
-        web_socket
-            .connect(&FuturesMarket::COINM, stream_example)
-            .unwrap();
+        web_socket.connect(&FuturesMarket::COINM, stream_example).unwrap();
         web_socket.event_loop(&keep_running).unwrap();
         web_socket.disconnect().unwrap();
     }

@@ -1,7 +1,7 @@
+use crate::errors::{Error, ErrorKind, Result};
 use serde::{Deserialize, Serialize};
 use serde_json::{from_value, Value};
 use std::convert::TryFrom;
-use crate::errors::{Error, ErrorKind, Result};
 
 #[derive(Deserialize, Clone)]
 pub struct Empty {}
@@ -1021,10 +1021,7 @@ pub struct KlineSummary {
 }
 
 fn get_value(row: &[Value], index: usize, name: &'static str) -> Result<Value> {
-    Ok(row
-        .get(index)
-        .ok_or_else(|| ErrorKind::KlineValueMissingError(index, name))?
-        .clone())
+    Ok(row.get(index).ok_or_else(|| ErrorKind::KlineValueMissingError(index, name))?.clone())
 }
 
 impl TryFrom<&Vec<Value>> for KlineSummary {
@@ -1041,16 +1038,8 @@ impl TryFrom<&Vec<Value>> for KlineSummary {
             close_time: from_value(get_value(row, 6, "close_time")?)?,
             quote_asset_volume: from_value(get_value(row, 7, "quote_asset_volume")?)?,
             number_of_trades: from_value(get_value(row, 8, "number_of_trades")?)?,
-            taker_buy_base_asset_volume: from_value(get_value(
-                row,
-                9,
-                "taker_buy_base_asset_volume",
-            )?)?,
-            taker_buy_quote_asset_volume: from_value(get_value(
-                row,
-                10,
-                "taker_buy_quote_asset_volume",
-            )?)?,
+            taker_buy_base_asset_volume: from_value(get_value(row, 9, "taker_buy_base_asset_volume")?)?,
+            taker_buy_quote_asset_volume: from_value(get_value(row, 10, "taker_buy_quote_asset_volume")?)?,
         })
     }
 }
@@ -1331,7 +1320,7 @@ pub struct DepositAddress {
 pub(crate) mod string_or_float {
     use std::fmt;
 
-    use serde::{de, Serializer, Deserialize, Deserializer};
+    use serde::{de, Deserialize, Deserializer, Serializer};
 
     pub fn serialize<T, S>(value: &T, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -1368,7 +1357,7 @@ pub(crate) mod string_or_float {
 pub(crate) mod string_or_float_opt {
     use std::fmt;
 
-    use serde::{Serializer, Deserialize, Deserializer};
+    use serde::{Deserialize, Deserializer, Serializer};
 
     pub fn serialize<T, S>(value: &Option<T>, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -1392,16 +1381,14 @@ pub(crate) mod string_or_float_opt {
             Float(f64),
         }
 
-        Ok(Some(crate::model::string_or_float::deserialize(
-            deserializer,
-        )?))
+        Ok(Some(crate::model::string_or_float::deserialize(deserializer)?))
     }
 }
 
 pub(crate) mod string_or_bool {
     use std::fmt;
 
-    use serde::{de, Serializer, Deserialize, Deserializer};
+    use serde::{de, Deserialize, Deserializer, Serializer};
 
     pub fn serialize<T, S>(value: &T, serializer: S) -> Result<S::Ok, S::Error>
     where

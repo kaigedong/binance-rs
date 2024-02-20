@@ -1,20 +1,20 @@
-use crate::errors::Result;
 use crate::config::Config;
-use crate::model::{
-    AccountUpdateEvent, AggrTradesEvent, BookTickerEvent, ContinuousKlineEvent, DayTickerEvent,
-    DepthOrderBookEvent, IndexKlineEvent, IndexPriceEvent, KlineEvent, LiquidationEvent,
-    MarkPriceEvent, MiniTickerEvent, OrderBook, TradeEvent, UserDataStreamExpiredEvent,
-};
+use crate::errors::Result;
 use crate::futures::model;
+use crate::model::{
+    AccountUpdateEvent, AggrTradesEvent, BookTickerEvent, ContinuousKlineEvent, DayTickerEvent, DepthOrderBookEvent,
+    IndexKlineEvent, IndexPriceEvent, KlineEvent, LiquidationEvent, MarkPriceEvent, MiniTickerEvent, OrderBook,
+    TradeEvent, UserDataStreamExpiredEvent,
+};
 use error_chain::bail;
-use url::Url;
 use serde::{Deserialize, Serialize};
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::net::TcpStream;
-use tungstenite::{connect, Message};
+use std::sync::atomic::{AtomicBool, Ordering};
+use tungstenite::handshake::client::Response;
 use tungstenite::protocol::WebSocket;
 use tungstenite::stream::MaybeTlsStream;
-use tungstenite::handshake::client::Response;
+use tungstenite::{connect, Message};
+use url::Url;
 
 #[allow(clippy::all)]
 enum FuturesWebsocketAPI {
@@ -118,16 +118,15 @@ impl<'a> FuturesWebSockets<'a> {
     }
 
     pub fn connect_with_config(
-        &mut self, market: &FuturesMarket, subscription: &'a str, config: &'a Config,
+        &mut self,
+        market: &FuturesMarket,
+        subscription: &'a str,
+        config: &'a Config,
     ) -> Result<()> {
-        self.connect_wss(
-            &FuturesWebsocketAPI::Custom(config.ws_endpoint.clone()).params(market, subscription),
-        )
+        self.connect_wss(&FuturesWebsocketAPI::Custom(config.ws_endpoint.clone()).params(market, subscription))
     }
 
-    pub fn connect_multiple_streams(
-        &mut self, market: &FuturesMarket, endpoints: &[String],
-    ) -> Result<()> {
+    pub fn connect_multiple_streams(&mut self, market: &FuturesMarket, endpoints: &[String]) -> Result<()> {
         self.connect_wss(&FuturesWebsocketAPI::MultiStream.params(market, &endpoints.join("/")))
     }
 
@@ -182,9 +181,7 @@ impl<'a> FuturesWebSockets<'a> {
                 FuturesEvents::OrderBook(v) => FuturesWebsocketEvent::OrderBook(v),
                 FuturesEvents::DepthOrderBookEvent(v) => FuturesWebsocketEvent::DepthOrderBook(v),
                 FuturesEvents::AggrTradesEvent(v) => FuturesWebsocketEvent::AggrTrades(v),
-                FuturesEvents::UserDataStreamExpiredEvent(v) => {
-                    FuturesWebsocketEvent::UserDataStreamExpiredEvent(v)
-                }
+                FuturesEvents::UserDataStreamExpiredEvent(v) => FuturesWebsocketEvent::UserDataStreamExpiredEvent(v),
             };
             (self.handler)(action)?;
         }

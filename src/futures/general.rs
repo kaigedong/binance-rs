@@ -1,11 +1,11 @@
 use error_chain::bail;
 
-use crate::model::Empty;
-use crate::futures::model::{ExchangeInformation, ServerTime, Symbol};
+use crate::api::Futures;
+use crate::api::API;
 use crate::client::Client;
 use crate::errors::Result;
-use crate::api::API;
-use crate::api::Futures;
+use crate::futures::model::{ExchangeInformation, ServerTime, Symbol};
+use crate::model::Empty;
 
 #[derive(Clone)]
 pub struct FuturesGeneral {

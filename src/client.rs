@@ -1,13 +1,13 @@
+use crate::api::API;
+use crate::errors::{BinanceContentError, ErrorKind, Result};
 use error_chain::bail;
 use hex::encode as hex_encode;
 use hmac::{Hmac, Mac};
-use crate::errors::{BinanceContentError, ErrorKind, Result};
-use reqwest::StatusCode;
 use reqwest::blocking::Response;
-use reqwest::header::{HeaderMap, HeaderName, HeaderValue, USER_AGENT, CONTENT_TYPE};
-use sha2::Sha256;
+use reqwest::header::{HeaderMap, HeaderName, HeaderValue, CONTENT_TYPE, USER_AGENT};
+use reqwest::StatusCode;
 use serde::de::DeserializeOwned;
-use crate::api::API;
+use sha2::Sha256;
 
 #[derive(Clone)]
 pub struct Client {
@@ -23,22 +23,14 @@ impl Client {
             api_key: api_key.unwrap_or_default(),
             secret_key: secret_key.unwrap_or_default(),
             host,
-            inner_client: reqwest::blocking::Client::builder()
-                .pool_idle_timeout(None)
-                .build()
-                .unwrap(),
+            inner_client: reqwest::blocking::Client::builder().pool_idle_timeout(None).build().unwrap(),
         }
     }
 
-    pub fn get_signed<T: DeserializeOwned>(
-        &self, endpoint: API, request: Option<String>,
-    ) -> Result<T> {
+    pub fn get_signed<T: DeserializeOwned>(&self, endpoint: API, request: Option<String>) -> Result<T> {
         let url = self.sign_request(endpoint, request);
         let client = &self.inner_client;
-        let response = client
-            .get(url.as_str())
-            .headers(self.build_headers(true)?)
-            .send()?;
+        let response = client.get(url.as_str()).headers(self.build_headers(true)?).send()?;
 
         self.handler(response)
     }
@@ -46,23 +38,15 @@ impl Client {
     pub fn post_signed<T: DeserializeOwned>(&self, endpoint: API, request: String) -> Result<T> {
         let url = self.sign_request(endpoint, Some(request));
         let client = &self.inner_client;
-        let response = client
-            .post(url.as_str())
-            .headers(self.build_headers(true)?)
-            .send()?;
+        let response = client.post(url.as_str()).headers(self.build_headers(true)?).send()?;
 
         self.handler(response)
     }
 
-    pub fn delete_signed<T: DeserializeOwned>(
-        &self, endpoint: API, request: Option<String>,
-    ) -> Result<T> {
+    pub fn delete_signed<T: DeserializeOwned>(&self, endpoint: API, request: Option<String>) -> Result<T> {
         let url = self.sign_request(endpoint, request);
         let client = &self.inner_client;
-        let response = client
-            .delete(url.as_str())
-            .headers(self.build_headers(true)?)
-            .send()?;
+        let response = client.delete(url.as_str()).headers(self.build_headers(true)?).send()?;
 
         self.handler(response)
     }
@@ -85,10 +69,7 @@ impl Client {
         let url: String = format!("{}{}", self.host, String::from(endpoint));
 
         let client = &self.inner_client;
-        let response = client
-            .post(url.as_str())
-            .headers(self.build_headers(false)?)
-            .send()?;
+        let response = client.post(url.as_str()).headers(self.build_headers(false)?).send()?;
 
         self.handler(response)
     }
@@ -98,11 +79,7 @@ impl Client {
         let data: String = format!("listenKey={}", listen_key);
 
         let client = &self.inner_client;
-        let response = client
-            .put(url.as_str())
-            .headers(self.build_headers(false)?)
-            .body(data)
-            .send()?;
+        let response = client.put(url.as_str()).headers(self.build_headers(false)?).body(data).send()?;
 
         self.handler(response)
     }
@@ -112,11 +89,7 @@ impl Client {
         let data: String = format!("listenKey={}", listen_key);
 
         let client = &self.inner_client;
-        let response = client
-            .delete(url.as_str())
-            .headers(self.build_headers(false)?)
-            .body(data)
-            .send()?;
+        let response = client.delete(url.as_str()).headers(self.build_headers(false)?).body(data).send()?;
 
         self.handler(response)
     }
@@ -124,8 +97,7 @@ impl Client {
     // Request must be signed
     fn sign_request(&self, endpoint: API, request: Option<String>) -> String {
         if let Some(request) = request {
-            let mut signed_key =
-                Hmac::<Sha256>::new_from_slice(self.secret_key.as_bytes()).unwrap();
+            let mut signed_key = Hmac::<Sha256>::new_from_slice(self.secret_key.as_bytes()).unwrap();
             signed_key.update(request.as_bytes());
             let signature = hex_encode(signed_key.finalize().into_bytes());
             let request_body: String = format!("{}&signature={}", request, signature);

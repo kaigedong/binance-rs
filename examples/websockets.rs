@@ -1,8 +1,7 @@
-
 use std::ffi::CString;
 use std::os::raw::c_char;
 
-extern {
+extern "C" {
     fn callApiEndpointFromRust(name: *const c_char);
 }
 

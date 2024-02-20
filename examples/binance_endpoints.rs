@@ -1,11 +1,11 @@
-use binance::api::*;
-use binance::savings::*;
-use binance::config::*;
-use binance::general::*;
 use binance::account::*;
+use binance::api::*;
+use binance::config::*;
+use binance::errors::ErrorKind as BinanceLibErrorKind;
+use binance::general::*;
 use binance::market::*;
 use binance::model::KlineSummary;
-use binance::errors::ErrorKind as BinanceLibErrorKind;
+use binance::savings::*;
 
 fn main() {
     // The general spot API endpoints; shown with
@@ -197,10 +197,7 @@ fn market_data() {
 
     // Best price/qty on the order book for ONE symbol
     match market.get_book_ticker("BNBETH") {
-        Ok(answer) => println!(
-            "Bid Price: {}, Ask Price: {}",
-            answer.bid_price, answer.ask_price
-        ),
+        Ok(answer) => println!("Bid Price: {}, Ask Price: {}", answer.bid_price, answer.ask_price),
         Err(e) => println!("Error: {}", e),
     }
 
@@ -233,10 +230,7 @@ fn market_data() {
             match klines {
                 binance::model::KlineSummaries::AllKlineSummaries(klines) => {
                     let kline: KlineSummary = klines[0].clone(); // You need to iterate over the klines
-                    println!(
-                        "Open: {}, High: {}, Low: {}",
-                        kline.open, kline.high, kline.low
-                    );
+                    println!("Open: {}, High: {}, Low: {}", kline.open, kline.high, kline.low);
                 }
             }
         }

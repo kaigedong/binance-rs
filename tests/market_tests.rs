@@ -6,13 +6,14 @@ use binance::model::*;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mockito::{Server, Matcher};
     use float_cmp::*;
+    use mockito::{Matcher, Server};
 
     #[test]
     fn get_depth() {
         let mut server = Server::new();
-        let mock_get_depth = server.mock("GET", "/api/v3/depth")
+        let mock_get_depth = server
+            .mock("GET", "/api/v3/depth")
             .with_header("content-type", "application/json;charset=UTF-8")
             .match_query(Matcher::Regex("symbol=LTCBTC".into()))
             .with_body_from_file("tests/mocks/market/get_depth.json")
@@ -31,7 +32,8 @@ mod tests {
     #[test]
     fn get_custom_depth() {
         let mut server = Server::new();
-        let mock_get_custom_depth = server.mock("GET", "/api/v3/depth")
+        let mock_get_custom_depth = server
+            .mock("GET", "/api/v3/depth")
             .with_header("content-type", "application/json;charset=UTF-8")
             .match_query(Matcher::Regex("limit=10&symbol=LTCBTC".into()))
             .with_body_from_file("tests/mocks/market/get_depth.json")
@@ -50,7 +52,8 @@ mod tests {
     #[test]
     fn get_all_prices() {
         let mut server = Server::new();
-        let mock_get_all_prices = server.mock("GET", "/api/v3/ticker/price")
+        let mock_get_all_prices = server
+            .mock("GET", "/api/v3/ticker/price")
             .with_header("content-type", "application/json;charset=UTF-8")
             .with_body_from_file("tests/mocks/market/get_all_prices.json")
             .create();
@@ -77,7 +80,8 @@ mod tests {
     #[test]
     fn get_price() {
         let mut server = Server::new();
-        let mock_get_price = server.mock("GET", "/api/v3/ticker/price")
+        let mock_get_price = server
+            .mock("GET", "/api/v3/ticker/price")
             .with_header("content-type", "application/json;charset=UTF-8")
             .match_query(Matcher::Regex("symbol=LTCBTC".into()))
             .with_body_from_file("tests/mocks/market/get_price.json")
@@ -96,7 +100,8 @@ mod tests {
     #[test]
     fn get_average_price() {
         let mut server = Server::new();
-        let mock_get_average_price = server.mock("GET", "/api/v3/avgPrice")
+        let mock_get_average_price = server
+            .mock("GET", "/api/v3/avgPrice")
             .with_header("content-type", "application/json;charset=UTF-8")
             .match_query(Matcher::Regex("symbol=LTCBTC".into()))
             .with_body_from_file("tests/mocks/market/get_average_price.json")
@@ -115,7 +120,8 @@ mod tests {
     #[test]
     fn get_all_book_tickers() {
         let mut server = Server::new();
-        let mock_get_all_book_tickers = server.mock("GET", "/api/v3/ticker/bookTicker")
+        let mock_get_all_book_tickers = server
+            .mock("GET", "/api/v3/ticker/bookTicker")
             .with_header("content-type", "application/json;charset=UTF-8")
             .with_body_from_file("tests/mocks/market/get_all_book_tickers.json")
             .create();
@@ -131,46 +137,16 @@ mod tests {
                 assert!(!tickers.is_empty());
                 let first_ticker = tickers[0].clone();
                 assert_eq!(first_ticker.symbol, "LTCBTC");
-                assert!(approx_eq!(
-                    f64,
-                    first_ticker.bid_price,
-                    4.00000000,
-                    ulps = 2
-                ));
-                assert!(approx_eq!(
-                    f64,
-                    first_ticker.bid_qty,
-                    431.00000000,
-                    ulps = 2
-                ));
-                assert!(approx_eq!(
-                    f64,
-                    first_ticker.ask_price,
-                    4.00000200,
-                    ulps = 2
-                ));
+                assert!(approx_eq!(f64, first_ticker.bid_price, 4.00000000, ulps = 2));
+                assert!(approx_eq!(f64, first_ticker.bid_qty, 431.00000000, ulps = 2));
+                assert!(approx_eq!(f64, first_ticker.ask_price, 4.00000200, ulps = 2));
                 assert!(approx_eq!(f64, first_ticker.ask_qty, 9.00000000, ulps = 2));
                 let second_ticker = tickers[1].clone();
                 assert_eq!(second_ticker.symbol, "ETHBTC");
-                assert!(approx_eq!(
-                    f64,
-                    second_ticker.bid_price,
-                    0.07946700,
-                    ulps = 2
-                ));
+                assert!(approx_eq!(f64, second_ticker.bid_price, 0.07946700, ulps = 2));
                 assert!(approx_eq!(f64, second_ticker.bid_qty, 9.00000000, ulps = 2));
-                assert!(approx_eq!(
-                    f64,
-                    second_ticker.ask_price,
-                    100000.00000000,
-                    ulps = 2
-                ));
-                assert!(approx_eq!(
-                    f64,
-                    second_ticker.ask_qty,
-                    1000.00000000,
-                    ulps = 2
-                ));
+                assert!(approx_eq!(f64, second_ticker.ask_price, 100000.00000000, ulps = 2));
+                assert!(approx_eq!(f64, second_ticker.ask_qty, 1000.00000000, ulps = 2));
             }
         }
     }
@@ -178,7 +154,8 @@ mod tests {
     #[test]
     fn get_book_ticker() {
         let mut server = Server::new();
-        let mock_get_book_ticker = server.mock("GET", "/api/v3/ticker/bookTicker")
+        let mock_get_book_ticker = server
+            .mock("GET", "/api/v3/ticker/bookTicker")
             .with_header("content-type", "application/json;charset=UTF-8")
             .match_query(Matcher::Regex("symbol=LTCBTC".into()))
             .with_body_from_file("tests/mocks/market/get_book_ticker.json")
@@ -200,7 +177,8 @@ mod tests {
     #[test]
     fn get_24h_price_stats() {
         let mut server = Server::new();
-        let mock_get_24h_price_stats = server.mock("GET", "/api/v3/ticker/24hr")
+        let mock_get_24h_price_stats = server
+            .mock("GET", "/api/v3/ticker/24hr")
             .with_header("content-type", "application/json;charset=UTF-8")
             .match_query(Matcher::Regex("symbol=BNBBTC".into()))
             .with_body_from_file("tests/mocks/market/get_24h_price_stats.json")
@@ -216,32 +194,12 @@ mod tests {
         assert_eq!(price_stats.price_change, "-94.99999800");
         assert_eq!(price_stats.price_change_percent, "-95.960");
         assert_eq!(price_stats.weighted_avg_price, "0.29628482");
-        assert!(approx_eq!(
-            f64,
-            price_stats.prev_close_price,
-            0.10002000,
-            ulps = 2
-        ));
-        assert!(approx_eq!(
-            f64,
-            price_stats.last_price,
-            4.00000200,
-            ulps = 2
-        ));
+        assert!(approx_eq!(f64, price_stats.prev_close_price, 0.10002000, ulps = 2));
+        assert!(approx_eq!(f64, price_stats.last_price, 4.00000200, ulps = 2));
         assert!(approx_eq!(f64, price_stats.bid_price, 4.00000000, ulps = 2));
         assert!(approx_eq!(f64, price_stats.ask_price, 4.00000200, ulps = 2));
-        assert!(approx_eq!(
-            f64,
-            price_stats.open_price,
-            99.00000000,
-            ulps = 2
-        ));
-        assert!(approx_eq!(
-            f64,
-            price_stats.high_price,
-            100.00000000,
-            ulps = 2
-        ));
+        assert!(approx_eq!(f64, price_stats.open_price, 99.00000000, ulps = 2));
+        assert!(approx_eq!(f64, price_stats.high_price, 100.00000000, ulps = 2));
         assert!(approx_eq!(f64, price_stats.low_price, 0.10000000, ulps = 2));
         assert!(approx_eq!(f64, price_stats.volume, 8913.30000000, ulps = 2));
         assert_eq!(price_stats.open_time, 1499783499040);
@@ -254,7 +212,8 @@ mod tests {
     #[test]
     fn get_all_24h_price_stats() {
         let mut server = Server::new();
-        let mock_get_all_24h_price_stats = server.mock("GET", "/api/v3/ticker/24hr")
+        let mock_get_all_24h_price_stats = server
+            .mock("GET", "/api/v3/ticker/24hr")
             .with_header("content-type", "application/json;charset=UTF-8")
             .with_body_from_file("tests/mocks/market/get_all_24h_price_stats.json")
             .create();
@@ -273,32 +232,12 @@ mod tests {
         assert_eq!(price_stats.price_change, "-94.99999800");
         assert_eq!(price_stats.price_change_percent, "-95.960");
         assert_eq!(price_stats.weighted_avg_price, "0.29628482");
-        assert!(approx_eq!(
-            f64,
-            price_stats.prev_close_price,
-            0.10002000,
-            ulps = 2
-        ));
-        assert!(approx_eq!(
-            f64,
-            price_stats.last_price,
-            4.00000200,
-            ulps = 2
-        ));
+        assert!(approx_eq!(f64, price_stats.prev_close_price, 0.10002000, ulps = 2));
+        assert!(approx_eq!(f64, price_stats.last_price, 4.00000200, ulps = 2));
         assert!(approx_eq!(f64, price_stats.bid_price, 4.00000000, ulps = 2));
         assert!(approx_eq!(f64, price_stats.ask_price, 4.00000200, ulps = 2));
-        assert!(approx_eq!(
-            f64,
-            price_stats.open_price,
-            99.00000000,
-            ulps = 2
-        ));
-        assert!(approx_eq!(
-            f64,
-            price_stats.high_price,
-            100.00000000,
-            ulps = 2
-        ));
+        assert!(approx_eq!(f64, price_stats.open_price, 99.00000000, ulps = 2));
+        assert!(approx_eq!(f64, price_stats.high_price, 100.00000000, ulps = 2));
         assert!(approx_eq!(f64, price_stats.low_price, 0.10000000, ulps = 2));
         assert!(approx_eq!(f64, price_stats.volume, 8913.30000000, ulps = 2));
         assert_eq!(price_stats.open_time, 1499783499040);
@@ -311,7 +250,8 @@ mod tests {
     #[test]
     fn get_klines() {
         let mut server = Server::new();
-        let mock_get_klines = server.mock("GET", "/api/v3/klines")
+        let mock_get_klines = server
+            .mock("GET", "/api/v3/klines")
             .with_header("content-type", "application/json;charset=UTF-8")
             .match_query(Matcher::Regex("interval=5m&limit=10&symbol=LTCBTC".into()))
             .with_body_from_file("tests/mocks/market/get_klines.json")

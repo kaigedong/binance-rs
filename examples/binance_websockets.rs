@@ -5,8 +5,6 @@ use binance::userstream::*;
 use binance::websockets::*;
 use std::sync::atomic::{AtomicBool, Ordering};
 
-
-
 fn main() {
     //user_stream();
     //user_stream_websocket();
@@ -15,8 +13,6 @@ fn main() {
     //all_trades_websocket();
     //last_price_for_one_symbol();
     // multiple_streams();
-
-
 }
 
 fn user_stream() {
@@ -55,10 +51,7 @@ fn user_stream_websocket() {
                     for balance in &account_update.data.balances {
                         println!(
                             "Asset: {}, wallet_balance: {}, cross_wallet_balance: {}, balance: {}",
-                            balance.asset,
-                            balance.wallet_balance,
-                            balance.cross_wallet_balance,
-                            balance.balance_change
+                            balance.asset, balance.wallet_balance, balance.cross_wallet_balance, balance.balance_change
                         );
                     }
                 }
@@ -92,10 +85,7 @@ fn market_websocket() {
     let mut web_socket: WebSockets<'_> = WebSockets::new(|event: WebsocketEvent| {
         match event {
             WebsocketEvent::Trade(trade) => {
-                println!(
-                    "Symbol: {}, price: {}, qty: {}",
-                    trade.symbol, trade.price, trade.qty
-                );
+                println!("Symbol: {}, price: {}, qty: {}", trade.symbol, trade.price, trade.qty);
             }
             WebsocketEvent::DepthOrderBook(depth_order_book) => {
                 println!(
@@ -198,8 +188,7 @@ fn last_price_for_one_symbol() {
 }
 
 fn multiple_streams() {
-    let endpoints =
-        ["ETHBTC", "BNBETH"].map(|symbol| format!("{}@depth@100ms", symbol.to_lowercase()));
+    let endpoints = ["ETHBTC", "BNBETH"].map(|symbol| format!("{}@depth@100ms", symbol.to_lowercase()));
 
     let keep_running = AtomicBool::new(true);
     let mut web_socket = WebSockets::new(|event: WebsocketEvent| {

@@ -1,8 +1,8 @@
-use crate::model::{Success, UserDataStream};
+use crate::api::Futures;
+use crate::api::API;
 use crate::client::Client;
 use crate::errors::Result;
-use crate::api::API;
-use crate::api::Futures;
+use crate::model::{Success, UserDataStream};
 
 #[derive(Clone)]
 pub struct FuturesUserStream {
@@ -17,12 +17,10 @@ impl FuturesUserStream {
     }
 
     pub fn keep_alive(&self, listen_key: &str) -> Result<Success> {
-        self.client
-            .put(API::Futures(Futures::UserDataStream), listen_key)
+        self.client.put(API::Futures(Futures::UserDataStream), listen_key)
     }
 
     pub fn close(&self, listen_key: &str) -> Result<Success> {
-        self.client
-            .delete(API::Futures(Futures::UserDataStream), listen_key)
+        self.client.delete(API::Futures(Futures::UserDataStream), listen_key)
     }
 }

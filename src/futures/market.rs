@@ -20,17 +20,17 @@
 - [ ] `Taker Buy/Sell Volume (MARKET_DATA)`
 */
 
-use crate::util::{build_request, build_signed_request};
-use crate::futures::model::{
-    AggTrades, BookTickers, KlineSummaries, KlineSummary, LiquidationOrders, MarkPrices,
-    OpenInterest, OpenInterestHist, OrderBook, PriceStats, SymbolPrice, Tickers, Trades,
-};
+use crate::api::Futures;
+use crate::api::API;
 use crate::client::Client;
 use crate::errors::Result;
-use std::collections::BTreeMap;
+use crate::futures::model::{
+    AggTrades, BookTickers, KlineSummaries, KlineSummary, LiquidationOrders, MarkPrices, OpenInterest,
+    OpenInterestHist, OrderBook, PriceStats, SymbolPrice, Tickers, Trades,
+};
+use crate::util::{build_request, build_signed_request};
 use serde_json::Value;
-use crate::api::API;
-use crate::api::Futures;
+use std::collections::BTreeMap;
 use std::convert::TryInto;
 
 // TODO
@@ -78,14 +78,11 @@ impl FuturesMarket {
         let mut parameters: BTreeMap<String, String> = BTreeMap::new();
         parameters.insert("symbol".into(), symbol.into());
         let request = build_request(parameters);
-        self.client
-            .get(API::Futures(Futures::Trades), Some(request))
+        self.client.get(API::Futures(Futures::Trades), Some(request))
     }
 
     // TODO This may be incomplete, as it hasn't been tested
-    pub fn get_historical_trades<S1, S2, S3>(
-        &self, symbol: S1, from_id: S2, limit: S3,
-    ) -> Result<Trades>
+    pub fn get_historical_trades<S1, S2, S3>(&self, symbol: S1, from_id: S2, limit: S3) -> Result<Trades>
     where
         S1: Into<String>,
         S2: Into<Option<u64>>,
@@ -105,12 +102,16 @@ impl FuturesMarket {
 
         let request = build_signed_request(parameters, self.recv_window)?;
 
-        self.client
-            .get_signed(API::Futures(Futures::HistoricalTrades), Some(request))
+        self.client.get_signed(API::Futures(Futures::HistoricalTrades), Some(request))
     }
 
     pub fn get_agg_trades<S1, S2, S3, S4, S5>(
-        &self, symbol: S1, from_id: S2, start_time: S3, end_time: S4, limit: S5,
+        &self,
+        symbol: S1,
+        from_id: S2,
+        start_time: S3,
+        end_time: S4,
+        limit: S5,
     ) -> Result<AggTrades>
     where
         S1: Into<String>,
@@ -139,14 +140,18 @@ impl FuturesMarket {
 
         let request = build_request(parameters);
 
-        self.client
-            .get(API::Futures(Futures::AggTrades), Some(request))
+        self.client.get(API::Futures(Futures::AggTrades), Some(request))
     }
 
     // Returns up to 'limit' klines for given symbol and interval ("1m", "5m", ...)
     // https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#klinecandlestick-data
     pub fn get_klines<S1, S2, S3, S4, S5>(
-        &self, symbol: S1, interval: S2, limit: S3, start_time: S4, end_time: S5,
+        &self,
+        symbol: S1,
+        interval: S2,
+        limit: S3,
+        start_time: S4,
+        end_time: S5,
     ) -> Result<KlineSummaries>
     where
         S1: Into<String>,
@@ -173,14 +178,10 @@ impl FuturesMarket {
 
         let request = build_request(parameters);
 
-        let data: Vec<Vec<Value>> = self
-            .client
-            .get(API::Futures(Futures::Klines), Some(request))?;
+        let data: Vec<Vec<Value>> = self.client.get(API::Futures(Futures::Klines), Some(request))?;
 
         let klines = KlineSummaries::AllKlineSummaries(
-            data.iter()
-                .map(|row| row.try_into())
-                .collect::<Result<Vec<KlineSummary>>>()?,
+            data.iter().map(|row| row.try_into()).collect::<Result<Vec<KlineSummary>>>()?,
         );
 
         Ok(klines)
@@ -196,8 +197,7 @@ impl FuturesMarket {
         parameters.insert("symbol".into(), symbol.into());
         let request = build_request(parameters);
 
-        self.client
-            .get(API::Futures(Futures::Ticker24hr), Some(request))
+        self.client.get(API::Futures(Futures::Ticker24hr), Some(request))
     }
 
     // 24hr ticker price change statistics for all symbols
@@ -215,8 +215,7 @@ impl FuturesMarket {
         parameters.insert("symbol".into(), symbol.into());
         let request = build_request(parameters);
 
-        self.client
-            .get(API::Futures(Futures::TickerPrice), Some(request))
+        self.client.get(API::Futures(Futures::TickerPrice), Some(request))
     }
 
     // Latest price for all symbols.
@@ -238,8 +237,7 @@ impl FuturesMarket {
         let mut parameters: BTreeMap<String, String> = BTreeMap::new();
         parameters.insert("symbol".into(), symbol.into());
         let request = build_request(parameters);
-        self.client
-            .get(API::Futures(Futures::BookTicker), Some(request))
+        self.client.get(API::Futures(Futures::BookTicker), Some(request))
     }
 
     pub fn get_mark_prices(&self) -> Result<MarkPrices> {
@@ -257,12 +255,16 @@ impl FuturesMarket {
         let mut parameters: BTreeMap<String, String> = BTreeMap::new();
         parameters.insert("symbol".into(), symbol.into());
         let request = build_request(parameters);
-        self.client
-            .get(API::Futures(Futures::OpenInterest), Some(request))
+        self.client.get(API::Futures(Futures::OpenInterest), Some(request))
     }
 
     pub fn open_interest_statistics<S1, S2, S3, S4, S5>(
-        &self, symbol: S1, period: S2, limit: S3, start_time: S4, end_time: S5,
+        &self,
+        symbol: S1,
+        period: S2,
+        limit: S3,
+        start_time: S4,
+        end_time: S5,
     ) -> Result<Vec<OpenInterestHist>>
     where
         S1: Into<String>,
@@ -286,7 +288,6 @@ impl FuturesMarket {
         }
 
         let request = build_request(parameters);
-        self.client
-            .get(API::Futures(Futures::OpenInterestHist), Some(request))
+        self.client.get(API::Futures(Futures::OpenInterestHist), Some(request))
     }
 }

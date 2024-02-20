@@ -1,10 +1,10 @@
-use crate::util::build_signed_request;
-use crate::model::{AssetDetail, CoinInfo, DepositAddress, SpotFuturesTransferType, TransactionId};
+use crate::api::Sapi;
+use crate::api::API;
 use crate::client::Client;
 use crate::errors::Result;
+use crate::model::{AssetDetail, CoinInfo, DepositAddress, SpotFuturesTransferType, TransactionId};
+use crate::util::build_signed_request;
 use std::collections::BTreeMap;
-use crate::api::API;
-use crate::api::Sapi;
 
 #[derive(Clone)]
 pub struct Savings {
@@ -16,8 +16,7 @@ impl Savings {
     /// Get all coins available for deposit and withdrawal
     pub fn get_all_coins(&self) -> Result<Vec<CoinInfo>> {
         let request = build_signed_request(BTreeMap::new(), self.recv_window)?;
-        self.client
-            .get_signed(API::Savings(Sapi::AllCoins), Some(request))
+        self.client.get_signed(API::Savings(Sapi::AllCoins), Some(request))
     }
 
     /// Fetch details of assets supported on Binance.
@@ -27,8 +26,7 @@ impl Savings {
             parameters.insert("asset".into(), asset);
         }
         let request = build_signed_request(parameters, self.recv_window)?;
-        self.client
-            .get_signed(API::Savings(Sapi::AssetDetail), Some(request))
+        self.client.get_signed(API::Savings(Sapi::AssetDetail), Some(request))
     }
 
     /// Fetch deposit address with network.
@@ -45,12 +43,14 @@ impl Savings {
             parameters.insert("network".into(), network);
         }
         let request = build_signed_request(parameters, self.recv_window)?;
-        self.client
-            .get_signed(API::Savings(Sapi::DepositAddress), Some(request))
+        self.client.get_signed(API::Savings(Sapi::DepositAddress), Some(request))
     }
 
     pub fn transfer_funds<S>(
-        &self, asset: S, amount: f64, transfer_type: SpotFuturesTransferType,
+        &self,
+        asset: S,
+        amount: f64,
+        transfer_type: SpotFuturesTransferType,
     ) -> Result<TransactionId>
     where
         S: Into<String>,
@@ -60,7 +60,6 @@ impl Savings {
         parameters.insert("amount".into(), amount.to_string());
         parameters.insert("type".into(), (transfer_type as u8).to_string());
         let request = build_signed_request(parameters, self.recv_window)?;
-        self.client
-            .post_signed(API::Savings(Sapi::SpotFuturesTransfer), request)
+        self.client.post_signed(API::Savings(Sapi::SpotFuturesTransfer), request)
     }
 }

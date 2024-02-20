@@ -3,9 +3,9 @@ use binance::util::*;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use float_cmp::*;
     use std::collections::BTreeMap;
     use std::time::{SystemTime, UNIX_EPOCH};
-    use float_cmp::*;
 
     #[test]
     fn build_request_empty() {
@@ -28,17 +28,12 @@ mod tests {
         let recv_window = 1234;
 
         let since_epoch = now.duration_since(UNIX_EPOCH).unwrap();
-        let timestamp =
-            since_epoch.as_secs() * 1000 + u64::from(since_epoch.subsec_nanos()) / 1_000_000;
+        let timestamp = since_epoch.as_secs() * 1000 + u64::from(since_epoch.subsec_nanos()) / 1_000_000;
 
         let parameters: BTreeMap<String, String> = BTreeMap::new();
-        let result =
-            binance::util::build_signed_request_custom(parameters, recv_window, now).unwrap();
+        let result = binance::util::build_signed_request_custom(parameters, recv_window, now).unwrap();
 
-        assert_eq!(
-            result,
-            format!("recvWindow={}&timestamp={}", recv_window, timestamp)
-        );
+        assert_eq!(result, format!("recvWindow={}&timestamp={}", recv_window, timestamp));
     }
 
     #[test]
@@ -52,11 +47,6 @@ mod tests {
     #[test]
     fn to_f64() {
         let value = serde_json::json!("123.3");
-        assert!(approx_eq!(
-            f64,
-            binance::util::to_f64(&value),
-            123.3,
-            ulps = 2
-        ));
+        assert!(approx_eq!(f64, binance::util::to_f64(&value), 123.3, ulps = 2));
     }
 }
