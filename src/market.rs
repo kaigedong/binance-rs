@@ -1,12 +1,11 @@
-use crate::api::Spot;
-use crate::api::API;
+use crate::api::{Spot, API};
 use crate::client::Client;
-use crate::errors::Result;
 use crate::model::{
     AggTrade, AveragePrice, BookTickers, KlineSummaries, KlineSummary, OrderBook, PriceStats, Prices, SymbolPrice,
     Tickers,
 };
 use crate::util::build_request;
+use anyhow::Result;
 use serde_json::Value;
 use std::collections::BTreeMap;
 use std::convert::TryInto;

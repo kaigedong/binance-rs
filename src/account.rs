@@ -1,11 +1,8 @@
-use error_chain::bail;
-
-use crate::api::Spot;
-use crate::api::API;
+use crate::api::{Spot, API};
 use crate::client::Client;
-use crate::errors::Result;
 use crate::model::{AccountInformation, Balance, Empty, Order, OrderCanceled, TradeHistory, Transaction};
 use crate::util::build_signed_request;
+use anyhow::{bail, Result};
 use std::collections::BTreeMap;
 use std::fmt::Display;
 

@@ -20,15 +20,14 @@
 - [ ] `Taker Buy/Sell Volume (MARKET_DATA)`
 */
 
-use crate::api::Futures;
-use crate::api::API;
+use crate::api::{Futures, API};
 use crate::client::Client;
-use crate::errors::Result;
 use crate::futures::model::{
     AggTrades, BookTickers, KlineSummaries, KlineSummary, LiquidationOrders, MarkPrices, OpenInterest,
     OpenInterestHist, OrderBook, PriceStats, SymbolPrice, Tickers, Trades,
 };
 use crate::util::{build_request, build_signed_request};
+use anyhow::Result;
 use serde_json::Value;
 use std::collections::BTreeMap;
 use std::convert::TryInto;

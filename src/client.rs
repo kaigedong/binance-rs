@@ -1,6 +1,6 @@
 use crate::api::API;
-use crate::errors::{BinanceContentError, ErrorKind, Result};
-use error_chain::bail;
+use crate::errors::{BinanceContentError, ErrorKind};
+use anyhow::{bail, Result};
 use hex::encode as hex_encode;
 use hmac::{Hmac, Mac};
 use reqwest::blocking::Response;
@@ -132,13 +132,13 @@ impl Client {
         match response.status() {
             StatusCode::OK => Ok(response.json::<T>()?),
             StatusCode::INTERNAL_SERVER_ERROR => {
-                bail!("Internal Server Error");
+                bail!("Internal Server Error")
             }
             StatusCode::SERVICE_UNAVAILABLE => {
-                bail!("Service Unavailable");
+                bail!("Service Unavailable")
             }
             StatusCode::UNAUTHORIZED => {
-                bail!("Unauthorized");
+                bail!("Unauthorized")
             }
             StatusCode::BAD_REQUEST => {
                 let error: BinanceContentError = response.json()?;
@@ -146,7 +146,7 @@ impl Client {
                 Err(ErrorKind::BinanceError(error).into())
             }
             s => {
-                bail!(format!("Received response: {:?}", s));
+                bail!(format!("Received response: {:?}", s))
             }
         }
     }

@@ -1,12 +1,11 @@
 use crate::config::Config;
-use crate::errors::Result;
 use crate::futures::model;
 use crate::model::{
     AccountUpdateEvent, AggrTradesEvent, BookTickerEvent, ContinuousKlineEvent, DayTickerEvent, DepthOrderBookEvent,
     IndexKlineEvent, IndexPriceEvent, KlineEvent, LiquidationEvent, MarkPriceEvent, MiniTickerEvent, OrderBook,
     TradeEvent, UserDataStreamExpiredEvent,
 };
-use error_chain::bail;
+use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
 use std::net::TcpStream;
 use std::sync::atomic::{AtomicBool, Ordering};

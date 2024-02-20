@@ -1,9 +1,8 @@
-use crate::api::Sapi;
-use crate::api::API;
+use crate::api::{Sapi, API};
 use crate::client::Client;
-use crate::errors::Result;
 use crate::model::{AssetDetail, CoinInfo, DepositAddress, SpotFuturesTransferType, TransactionId};
 use crate::util::build_signed_request;
+use anyhow::Result;
 use std::collections::BTreeMap;
 
 #[derive(Clone)]

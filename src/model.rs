@@ -1,4 +1,5 @@
-use crate::errors::{Error, ErrorKind, Result};
+use crate::errors::ErrorKind;
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_value, Value};
 use std::convert::TryFrom;
@@ -1025,7 +1026,7 @@ fn get_value(row: &[Value], index: usize, name: &'static str) -> Result<Value> {
 }
 
 impl TryFrom<&Vec<Value>> for KlineSummary {
-    type Error = Error;
+    type Error = anyhow::Error;
 
     fn try_from(row: &Vec<Value>) -> Result<Self> {
         Ok(Self {

@@ -1,10 +1,10 @@
 use crate::account::OrderSide;
 use crate::api::{Futures, API};
 use crate::client::Client;
-use crate::errors::Result;
 use crate::futures::model::{Order, TradeHistory};
 use crate::model::Empty;
 use crate::util::build_signed_request;
+use anyhow::Result;
 use std::collections::BTreeMap;
 use std::fmt::Display;
 
@@ -420,7 +420,7 @@ impl FuturesAccount {
         _order_count: u64,
         order_requests: Vec<CustomOrderRequest>,
     ) -> Result<Transaction> {
-        let request = String::from("");
+        let request = String::new();
         for order_request in order_requests {
             let order = OrderRequest {
                 symbol: order_request.symbol,

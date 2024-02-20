@@ -1,10 +1,7 @@
-use error_chain::bail;
-
-use crate::api::Spot;
-use crate::api::API;
+use crate::api::{Spot, API};
 use crate::client::Client;
-use crate::errors::Result;
 use crate::model::{Empty, ExchangeInformation, ServerTime, Symbol};
+use anyhow::{bail, Result};
 
 #[derive(Clone)]
 pub struct General {
