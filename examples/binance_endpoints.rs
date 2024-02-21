@@ -19,7 +19,7 @@ fn main() {
     // The account data API and savings API endpoint examples need an API key. Change those lines locally
     // and uncomment the line below (and do not commit your api key :)).
     //account();
-    //savings();
+    // savings();
 }
 
 fn general(use_testnet: bool) {
