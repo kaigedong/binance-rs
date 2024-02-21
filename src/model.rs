@@ -1,4 +1,3 @@
-use crate::errors::ErrorKind;
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_value, Value};
@@ -1022,7 +1021,7 @@ pub struct KlineSummary {
 }
 
 fn get_value(row: &[Value], index: usize, name: &'static str) -> Result<Value> {
-    Ok(row.get(index).ok_or_else(|| ErrorKind::KlineValueMissingError(index, name))?.clone())
+    Ok(row.get(index).ok_or_else(|| crate::errors::CustomError::KlineValueMissingError { index, name })?.clone())
 }
 
 impl TryFrom<&Vec<Value>> for KlineSummary {

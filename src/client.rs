@@ -1,6 +1,6 @@
 use crate::api::API;
-use crate::errors::{BinanceContentError, ErrorKind};
-use anyhow::{bail, Result};
+use crate::errors::CustomError;
+use anyhow::{anyhow, bail, Result};
 use hex::encode as hex_encode;
 use hmac::{Hmac, Mac};
 use reqwest::blocking::Response;
@@ -141,9 +141,8 @@ impl Client {
                 bail!("Unauthorized")
             }
             StatusCode::BAD_REQUEST => {
-                let error: BinanceContentError = response.json()?;
-
-                Err(ErrorKind::BinanceError(error).into())
+                let error: crate::errors::BinanceContentError = response.json()?;
+                Err(anyhow!(CustomError::BinanceError(error)))
             }
             s => {
                 bail!(format!("Received response: {:?}", s))

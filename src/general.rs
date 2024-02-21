@@ -1,5 +1,6 @@
 use crate::api::{Spot, API};
 use crate::client::Client;
+use crate::errors::CustomError;
 use crate::model::{Empty, ExchangeInformation, ServerTime, Symbol};
 use anyhow::{bail, Result};
 
@@ -10,7 +11,7 @@ pub struct General {
 
 impl General {
     // Test connectivity
-    pub fn ping(&self) -> Result<String> {
+    pub fn ping(&self) -> Result<String, CustomError> {
         self.client.get::<Empty>(API::Spot(Spot::Ping), None)?;
         Ok("pong".into())
     }

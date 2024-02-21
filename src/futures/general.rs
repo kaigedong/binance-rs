@@ -1,5 +1,6 @@
 use crate::api::{Futures, API};
 use crate::client::Client;
+use crate::errors::CustomError;
 use crate::futures::model::{ExchangeInformation, ServerTime, Symbol};
 use crate::model::Empty;
 use anyhow::{bail, Result};
@@ -11,7 +12,7 @@ pub struct FuturesGeneral {
 
 impl FuturesGeneral {
     // Test connectivity
-    pub fn ping(&self) -> Result<String> {
+    pub fn ping(&self) -> Result<String, CustomError> {
         self.client.get::<Empty>(API::Futures(Futures::Ping), None)?;
         Ok("pong".into())
     }

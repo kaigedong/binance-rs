@@ -59,7 +59,7 @@ fn market_websocket() {
     ];
 
     let callback_fn = |event: FuturesWebsocketEvent| {
-        // once a FuturesWebsocketEvent is recevied, we print it
+        // once a FuturesWebsocketEvent is received, we print it
         // and stop this socket, so the example will continue to the next one
         //
         // in case an event comes in that doesn't properly serialize to

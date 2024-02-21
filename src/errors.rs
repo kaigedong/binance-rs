@@ -8,11 +8,11 @@ pub struct BinanceContentError {
 }
 
 #[derive(Error, Debug)]
-pub enum ErrorKind {
+pub enum CustomError {
     #[error("Binance Error")]
     BinanceError(BinanceContentError),
-    #[error("{0} at {1} is missing")]
-    KlineValueMissingError(usize, &'static str),
+    #[error("{index} at {name} is missing")]
+    KlineValueMissingError { index: usize, name: &'static str },
     #[error("ReqError: {0}")]
     ReqError(#[from] reqwest::Error),
     #[error("InvalidHeaderError: {0}")]
@@ -29,26 +29,7 @@ pub enum ErrorKind {
     Tungstenite(#[from] tungstenite::Error),
     #[error("TimestampError: {0}")]
     TimestampError(#[from] std::time::SystemTimeError),
-}
 
-// error_chain! {
-//     errors {
-//         BinanceError(response: BinanceContentError)
-//
-//         KlineValueMissingError(index: usize, name: &'static str) {
-//             description("invalid Vec for Kline"),
-//             display("{} at {} is missing", name, index),
-//         }
-//      }
-//
-//     foreign_links {
-//         ReqError(reqwest::Error);
-//         InvalidHeaderError(reqwest::header::InvalidHeaderValue);
-//         IoError(std::io::Error);
-//         ParseFloatError(std::num::ParseFloatError);
-//         UrlParserError(url::ParseError);
-//         Json(serde_json::Error);
-//         Tungstenite(tungstenite::Error);
-//         TimestampError(std::time::SystemTimeError);
-//     }
-// }
+    #[error(transparent)]
+    Other(#[from] anyhow::Error), // source and Display delegate to anyhow::Error
+}
